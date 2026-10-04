@@ -1,40 +1,70 @@
 import json
 
 
+CHAMBER_CAPACITY = 2
+OXYGEN_PER_DIVE = 1
+
+
 def new_game():
-    return {'src': 5, 'dst': 0, 'closed': False, 'events': {}, 'queue': [], 'items': [], 'next_id': 1}
+    return {'src': 5, 'dst': 0, 'closed': False, 'paused': False, 'processed': False, 'dispatched': False, 'events': {}, 'queue': [], 'items': [], 'next_id': 1}
 
 def bug_12(state):
-    state["src"] -= 10
+    state["dst"] = 0
+    state["processed"] = False
+    state["dispatched"] = False
     return True
 
 def bug_15(state):
+    if state.get("closed") or state.get("paused"):
+        return False
     return True
 
 def bug_18(state):
+    if state.get("processed"):
+        return False
+    state["processed"] = True
     return True
 
 def bug_21(state):
-    return True
+    if not state["items"]:
+        return None
+    return state["items"][0]
 
 def bug_24(state):
-    return max(state["events"].items(), key=lambda item: item[1][0])[0]
+    if not state["events"]:
+        return None
+    return min(state["events"].items(), key=lambda item: item[1][0])[0]
 
 def bug_27(state):
+    if state.get("closed") or state.get("paused"):
+        return False
+    if not state["queue"]:
+        return False
+    if len(state["items"]) >= CHAMBER_CAPACITY:
+        return False
     return True
 
 def bug_0(state):
+    if state.get("closed") or state.get("paused"):
+        return False
+    if state.get("dispatched"):
+        return False
+    state["dispatched"] = True
+    state["dst"] += OXYGEN_PER_DIVE
     return True
 
 def bug_3(state):
-    return state["queue"].pop()
+    if not state["queue"]:
+        return None
+    return state["queue"][0]
 
 def bug_6(state):
-    return len(state["items"]) - 1
+    return len(state["items"])
 
 def bug_9(state):
+    mission_id = state["next_id"]
     state["next_id"] += 1
-    return state["next_id"]
+    return mission_id
 
 def main():
     print("命令: run/quit")
