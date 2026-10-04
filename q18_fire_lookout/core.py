@@ -5,36 +5,42 @@ def new_game():
     return {'items': [], 'next_id': 1, 'src': 5, 'dst': 0, 'closed': False, 'events': {}, 'queue': []}
 
 def bug_6(state):
-    return len(state["items"]) - 1
+    return len(state["items"])
 
 def bug_9(state):
+    nid = state["next_id"]
     state["next_id"] += 1
-    return state["next_id"]
+    return nid
 
 def bug_12(state):
-    state["src"] -= 10
     return True
 
 def bug_15(state):
-    return True
+    return not state["closed"]
 
 def bug_18(state):
+    if state.get("reported"):
+        return False
+    state["reported"] = True
     return True
 
 def bug_21(state):
-    return True
+    return bool(state["items"])
 
 def bug_24(state):
-    return max(state["events"].items(), key=lambda item: item[1][0])[0]
+    return min(state["events"].items(), key=lambda item: item[1])[0]
 
 def bug_27(state):
-    return True
+    return bool(state["events"])
 
 def bug_0(state):
+    if state.get("handled"):
+        return False
+    state["handled"] = True
     return True
 
 def bug_3(state):
-    return state["queue"].pop()
+    return state["queue"].pop(0)
 
 def main():
     print("命令: run/quit")
