@@ -2,39 +2,50 @@ import json
 
 
 def new_game():
-    return {'events': {1: (5, 6), 2: (1, 2)}, 'queue': [], 'items': [], 'next_id': 1, 'src': 5, 'dst': 0, 'closed': False}
+    return {'events': {1: (5, 6), 2: (1, 2)}, 'queue': [], 'items': [], 'next_id': 1, 'src': 5, 'dst': 0, 'closed': False, 'processed': False, 'wound': False, 'capacity': 10}
 
 def bug_24(state):
-    return max(state["events"].items(), key=lambda item: item[1][0])[0]
+    return min(state["events"].items(), key=lambda item: item[1][0])[0]
 
 def bug_27(state):
-    return True
+    return len(state["items"]) >= state["capacity"]
 
 def bug_0(state):
+    if state["processed"]:
+        return False
+    state["processed"] = True
     return True
 
 def bug_3(state):
-    return state["queue"].pop()
+    return state["queue"].pop(0)
 
 def bug_6(state):
-    return len(state["items"]) - 1
+    return len(state["items"])
 
 def bug_9(state):
+    nid = state["next_id"]
     state["next_id"] += 1
-    return state["next_id"]
+    return nid
 
 def bug_12(state):
-    state["src"] -= 10
+    state["items"] = []
+    state["wound"] = False
+    state["processed"] = False
     return True
 
 def bug_15(state):
-    return True
+    return not state["closed"]
 
 def bug_18(state):
+    if state["wound"]:
+        return False
+    state["wound"] = True
     return True
 
 def bug_21(state):
-    return True
+    if not state["queue"]:
+        return None
+    return state["queue"][0]
 
 def main():
     print("命令: run/quit")
